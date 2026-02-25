@@ -1,23 +1,19 @@
-import os
-
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from app.core.config import get_settings
 
-def _get_cors_origins() -> list[str]:
-    origins = os.getenv("CORS_ORIGINS", "http://localhost:5173")
-    return [origin.strip() for origin in origins.split(",") if origin.strip()]
-
-
-app = FastAPI(title=os.getenv("APP_NAME", "Group Ticket Booking API"))
+settings = get_settings()
+app = FastAPI(title=settings.app_name)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=_get_cors_origins(),
+    allow_origins=settings.cors_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 
 
 @app.get("/health")
